@@ -9,14 +9,12 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^5.0.8"
+    "vite": "^5.0.8",
+    "vite-plugin-graphql-loader": "^2.0.0"
   },
   "dependencies": {
     "@stakewise/v3-sdk": "^1.0.7",
     "ethers": "^6.9.2",
-    "i": "^0.3.7",
-    "npm": "^10.2.5",
-    "vite-plugin-graphql-loader": "^2.0.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz"
   }
 }
