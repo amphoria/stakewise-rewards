@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+        <link rel="stylesheet" href="style.css">
+        <title>Stakewise Rewards</title>
+    </head>
+    <body>
+        <h1>Stakewise Rewards</h1>
+        <div class="grid-container">
+            <div class="grid-label">
+                <label for="vault-address-el">Vault address:</label>
+            </div>
+            <div class="grid-input">
+                <input type="text" class="input-el" id="vault-address-el" value="0xAC0F906E433d58FA868F936E8A43230473652885">
+            </div>
+            <div class="grid-button">
+                <button class="buttons" id="vault-address-save-btn">Save Vault Address</button>
+            </div>
+            <div class="grid-label">
+                <label for="user-address-el">User address:</label>
+            </div>
+            <div class="grid-input">
+                <input type="text" class="input-el" id="user-address-el">
+            </div>
+            <div class="grid-button">
+                <button class="buttons" id="user-address-save-btn">Save User Address</button>
+            </div>
+            <div class="grid-label">
+                <label for="from-date-el">From date:</label>
+            </div>
+            <div class="grid-input">
+                <input type="text" class="input-el" id="from-date-el" value="2023-11-29">
+            </div>
+            <div class="grid-button">
+                <button class="buttons" id="from-date-save-btn">Save From Date</button>
+            </div>
+        </div>
+        <div class="button-grid">
+            <div class="retrieve-column">
+                <button class="buttons" id="retrieve-rewards-btn">Retrieve Rewards</button>
+            </div>
+            <div class="export-column">
+                <button class="buttons" id="export-rewards-btn">Export Rewards to Excel</button>
+            </div>
+        </div>
+        <div class="rewards-grid" id="rewards-grid">
+
+        </div>
+        <script type="module" src="/index.js"></script>    
+    </body>
+</html>
