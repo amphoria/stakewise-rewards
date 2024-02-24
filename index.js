@@ -3,33 +3,75 @@ import * as XLSX from 'xlsx'
 
 const sdk = new StakeWiseSDK({ network: Network.Mainnet })
 
+// vaultsArray is an array of vault objects giving the name and address of the vault
+let vaultsArray = []
+
+const vaultName = document.getElementById('vault-name')
+const vaultAddress = document.getElementById('vault-address')
+const submitBtn = document.getElementById('submit-btn')
+const deleteBtn = document.getElementById('delete-btn')
 const vaultAddressEl = document.getElementById('vault-address-el')
-const vaultAddressSaveBtn = document.getElementById('vault-address-save-btn')
 const userAddressEl = document.getElementById('user-address-el')
 const userAddressSaveBtn = document.getElementById('user-address-save-btn')
 const fromDateEl = document.getElementById('from-date-el')
 const fromDateSaveBtn = document.getElementById('from-date-save-btn')
-const retrieveBtn = document.getElementById('retrieve-btn')
-const exportBtn = document.getElementById('export-btn')
 const retrieveRewardsBtn = document.getElementById('retrieve-rewards-btn')
 const exportRewardsBtn = document.getElementById('export-rewards-btn')
 const rewardsGrid = document.getElementById('rewards-grid')
 
+const genesisVaultAddress = "0xAC0F906E433d58FA868F936E8A43230473652885"
+
+vaultName.addEventListener('change', vaultChanged)
+vaultAddress.addEventListener('change', vaultChanged)
+submitBtn.addEventListener('click', addVault)
+deleteBtn.addEventListener('click', deleteVault)
+
+function vaultChanged() {
+    submitBtn.disabled = false
+}
+
+function addVault(e) {
+    e.preventDefault();
+    const vaultNameAddr = {
+        name: vaultName.value,
+        address: vaultAddress.value
+    }
+    vaultsArray.push(vaultNameAddr)
+    writeCookie(vaultsArray)
+    let html = ""
+    vaultsArray.forEach((vault) => {
+        html += `<option value='${vault.name}: ${vault.address}'>${vault.name}: ${vault.address}</option>`
+    })
+    vaultAddressEl.innerHTML = html
+    submitBtn.disabled = true
+}
+
+function deleteVault(e) {
+    e.preventDefault();
+    const index = vaultsArray.findIndex((vault) => {
+        return (vault.name === vaultName.value) && (vault.address === vaultAddress.value)
+    })
+    console.log(index)
+    vaultsArray.splice(index, 1)
+    writeCookie(vaultsArray)
+    vaultName.value = vaultsArray[0].name
+    vaultAddress.value = vaultsArray[0].address
+    let html = ""
+    vaultsArray.forEach((vault) => {
+        html += `<option value='${vault.name}: ${vault.address}'>${vault.name}: ${vault.address}</option>`
+    })
+    vaultAddressEl.innerHTML = html
+    deleteBtn.disabled = true
+}
+
 // Array to hold data for export to Excel
 let exportData = []
 
-vaultAddressSaveBtn.addEventListener('click', saveVaultAddress)
+vaultAddressEl.addEventListener('change', vaultSelectorChanged)
 userAddressSaveBtn.addEventListener('click', saveUserAddress)
 fromDateSaveBtn.addEventListener('click', saveFromDate)
 retrieveRewardsBtn.addEventListener('click', retrieveRewards)
 exportRewardsBtn.addEventListener('click', exportRewards)
-
-// Default vault address
-const vaultAddressCookie = getCookie("defaultVaultAddress")
-if (vaultAddressCookie != "" && vaultAddressEl.value === "") {
-    const defaultVaultAddress = vaultAddressCookie.split('=')
-    vaultAddressEl.value = defaultVaultAddress[1]
-} 
 
 // Default user address
 const userAddressCookie = getCookie("defaultUserAddress")
@@ -61,11 +103,17 @@ function getCookie(caddr) {
     return "";
 }
 
-function saveVaultAddress() {
-    if (vaultAddressEl.value != "") {
-        document.cookie = "defaultVaultAddress=" + vaultAddressEl.value
-    } else {
-        console.log("No vault address entered")
+function writeCookie(array) {
+    const arrayStr = JSON.stringify(array)
+    document.cookie = `stakewiseVaults=${arrayStr}`
+}
+
+function vaultSelectorChanged() {
+    const nameAddr = vaultAddressEl.value.split(': ')
+    vaultName.value = nameAddr[0]
+    vaultAddress.value = nameAddr[1]
+    if (vaultsArray.length > 1) {
+        deleteBtn.disabled = false
     }
 }
 
@@ -94,10 +142,11 @@ async function retrieveRewards() {
     let jsTimestamp = new Date(fromDateEl.value).getTime()
     const dateFrom = Number((jsTimestamp / 1000).toFixed(0))
 
+    const nameAddr = vaultAddressEl.value.split(': ')
     const input = {
         dateFrom: dateFrom,
         userAddress: userAddressEl.value,
-        vaultAddress: vaultAddressEl.value,
+        vaultAddress: nameAddr[1]
     }
     
     const output = await sdk.vault.getUserRewards(input)
@@ -134,9 +183,31 @@ function exportRewards() {
     let ws = XLSX.utils.json_to_sheet(exportData)
     let wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, "Rewards")
-    XLSX.writeFile(wb, "stakewise_v3_rewards.xlsx")
+
+    const nameAddr = vaultAddressEl.value.split(': ')
+    const name = nameAddr[0].toLowerCase().replace(/ /g, "_")
+    XLSX.writeFile(wb, `${name}_rewards.xlsx`)
 }
 
+function setupInputs() {
+    const cookie = getCookie("stakewiseVaults")
+    if (cookie != "") {
+        const array = cookie.split('=')
+        vaultsArray = JSON.parse(array[1])
+    } else {
+        vaultsArray[0] = {
+            name: "Genesis",
+            address: genesisVaultAddress
+        }
+        writeCookie(vaultsArray)
+    }
+    vaultName.value = vaultsArray[0].name
+    vaultAddress.value = vaultsArray[0].address
+    let html = ""
+    vaultsArray.forEach((vault) => {
+        html += `<option value='${vault.name}: ${vault.address}'>${vault.name}: ${vault.address}</option>`
+    })
+    vaultAddressEl.innerHTML = html
+}
 
-
-
+setupInputs()

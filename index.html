@@ -6,15 +6,34 @@
     </head>
     <body>
         <h1>Stakewise Rewards</h1>
+        <form>
+            <label class="form-label" for="vault-name">Vault name:</label>
+            <input 
+                class="form-el" 
+                type="text" 
+                id="vault-name" 
+                name="vault-name" 
+                placeholder="Vault name"
+            >
+            <label class="form-label" for="vault-address">Vault address:</label>
+            <input
+                class="form-el" 
+                type="text" 
+                id="vault-address" 
+                name="vault-address" 
+                placeholder="Vault address"
+            >
+            <div class="form-buttons">
+                <button type="submit" class="form-btn" id="submit-btn" disabled>Add</button>
+                <button class="form-btn" id="delete-btn" disabled>Delete</button>
+            </div>
+        </form>
         <div class="grid-container">
             <div class="grid-label">
                 <label for="vault-address-el">Vault address:</label>
             </div>
-            <div class="grid-input">
-                <input type="text" class="input-el" id="vault-address-el" value="0xAC0F906E433d58FA868F936E8A43230473652885">
-            </div>
-            <div class="grid-button">
-                <button class="buttons" id="vault-address-save-btn">Save Vault Address</button>
+            <div class="vault-selector">
+                <select class="vault-address-el" name="vault-address-el" id="vault-address-el"></select>
             </div>
             <div class="grid-label">
                 <label for="user-address-el">User address:</label>

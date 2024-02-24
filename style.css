@@ -21,6 +21,50 @@ ul {
     margin-left: 220px;
 }
 
+form {
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+    margin-left: 150px;
+    margin-bottom: 50px;
+    padding: 10px 20px;
+    border: 2px solid green;
+    border-radius: 5px;
+}
+
+.form-label {
+    color: #059669;
+    margin: 5px 0;
+}
+
+.form-el {
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    background: #474649;
+    color: white;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.form-btn {
+    width: 150px;
+    background: #474649;
+    color: white;
+    padding: 10px 0;
+    border-radius: 8px;
+    font-weight: bold;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.form-btn:disabled {
+    color: gray;
+    cursor: default;
+}
+
 .container {
     width: 920px;
 }
@@ -29,6 +73,16 @@ ul {
     display: grid;
     grid-template-columns: 150px 550px 300px;
     row-gap: 20px;
+}
+
+.vault-selector {
+    grid-column: 2 / -1;
+}
+
+.vault-address-el {
+    padding: 10px;
+    background: #474649;
+    color: whitesmoke;
 }
 
 .grid-label {
