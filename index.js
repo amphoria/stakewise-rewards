@@ -65,7 +65,7 @@ function deleteVault(e) {
 }
 
 // Array to hold data for export to Excel
-let exportData = []
+let exportData
 
 vaultAddressEl.addEventListener('change', vaultSelectorChanged)
 userAddressSaveBtn.addEventListener('click', saveUserAddress)
@@ -138,6 +138,8 @@ async function retrieveRewards() {
     let date
     let localDate
     const options = { year: 'numeric', month: 'short', day: 'numeric' }
+
+    exportData = []
 
     let jsTimestamp = new Date(fromDateEl.value).getTime()
     const dateFrom = Number((jsTimestamp / 1000).toFixed(0))
