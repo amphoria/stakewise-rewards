@@ -115,6 +115,8 @@ function vaultSelectorChanged() {
     if (vaultsArray.length > 1) {
         deleteBtn.disabled = false
     }
+    // Clear rewards grid
+    rewardsGrid.innerHTML = ``
 }
 
 function saveUserAddress() {
