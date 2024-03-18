@@ -51,7 +51,6 @@ function deleteVault(e) {
     const index = vaultsArray.findIndex((vault) => {
         return (vault.name === vaultName.value) && (vault.address === vaultAddress.value)
     })
-    console.log(index)
     vaultsArray.splice(index, 1)
     writeCookie(vaultsArray)
     vaultName.value = vaultsArray[0].name
@@ -82,9 +81,11 @@ if (userAddressCookie != "") {
 
 // Default from date
 const fromDateCookie = getCookie("defaultFromDate")
-if (fromDateCookie != "" && fromDateEl.value === "") {
+if (fromDateCookie != "") {
     const defaultFromDate = fromDateCookie.split('=')
     fromDateEl.value = defaultFromDate[1]
+} else {
+    fromDateEl.value = '2023-11-29'
 }
 
 function getCookie(caddr) {
@@ -129,7 +130,7 @@ function saveUserAddress() {
 
 function saveFromDate() {
     if (fromDateEl.value != "") {
-        document.cookie = "defaultFromDate=" + vaultAddressEl.value
+        document.cookie = "defaultFromDate=" + fromDateEl.value
     } else {
         console.log("No from date entered")
     }
