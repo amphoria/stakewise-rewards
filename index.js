@@ -1,15 +1,17 @@
 import { StakeWiseSDK, Network } from '@stakewise/v3-sdk'
 import * as XLSX from 'xlsx'
 
-const sdk = new StakeWiseSDK({ network: Network.Mainnet })
+let sdk
 
 // vaultsArray is an array of vault objects giving the name and address of the vault
 let vaultsArray = []
 
-const vaultName = document.getElementById('vault-name')
-const vaultAddress = document.getElementById('vault-address')
+const networkName = document.getElementById('form-network-name')
+const vaultName = document.getElementById('form-vault-name')
+const vaultAddress = document.getElementById('form-vault-address')
 const submitBtn = document.getElementById('submit-btn')
 const deleteBtn = document.getElementById('delete-btn')
+const networkEl = document.getElementById('network-name')
 const vaultAddressEl = document.getElementById('vault-address-el')
 const userAddressEl = document.getElementById('user-address-el')
 const userAddressSaveBtn = document.getElementById('user-address-save-btn')
@@ -31,41 +33,38 @@ function vaultChanged() {
 }
 
 function addVault(e) {
-    e.preventDefault();
     const vaultNameAddr = {
+        network: networkName.value,
         name: vaultName.value,
         address: vaultAddress.value
     }
     vaultsArray.push(vaultNameAddr)
     writeCookie(vaultsArray)
-    let html = ""
-    vaultsArray.forEach((vault) => {
-        html += `<option value='${vault.name}: ${vault.address}'>${vault.name}: ${vault.address}</option>`
-    })
-    vaultAddressEl.innerHTML = html
+    networkEl.value = networkName.value
+    networkEl.dispatchEvent(new Event('change'))
     submitBtn.disabled = true
 }
 
 function deleteVault(e) {
     e.preventDefault();
     const index = vaultsArray.findIndex((vault) => {
-        return (vault.name === vaultName.value) && (vault.address === vaultAddress.value)
+        return (vault.network === networkName.value) 
+            && (vault.name === vaultName.value) 
+            && (vault.address === vaultAddress.value)
     })
     vaultsArray.splice(index, 1)
     writeCookie(vaultsArray)
+    networkName.value = vaultsArray[0].network
     vaultName.value = vaultsArray[0].name
     vaultAddress.value = vaultsArray[0].address
-    let html = ""
-    vaultsArray.forEach((vault) => {
-        html += `<option value='${vault.name}: ${vault.address}'>${vault.name}: ${vault.address}</option>`
-    })
-    vaultAddressEl.innerHTML = html
+    networkEl.dispatchEvent(new Event('change'))
     deleteBtn.disabled = true
 }
 
 // Array to hold data for export to Excel
 let exportData
 
+networkEl.addEventListener('change', networkSelectorChanged)
 vaultAddressEl.addEventListener('change', vaultSelectorChanged)
 userAddressSaveBtn.addEventListener('click', saveUserAddress)
 fromDateSaveBtn.addEventListener('click', saveFromDate)
@@ -107,6 +106,33 @@ function getCookie(caddr) {
 function writeCookie(array) {
     const arrayStr = JSON.stringify(array)
     document.cookie = `stakewiseVaults=${arrayStr}`
+}
+
+function networkSelectorChanged() {
+    const network = networkEl.value
+    if (network === "Ethereum") {
+        sdk = new StakeWiseSDK({ network: Network.Mainnet })
+    } else if (network === "Gnosis") {
+        sdk = new StakeWiseSDK({ network: Network.Gnosis })
+    } else {
+        console.log("Invalid network specified")
+    }
+    let html = ""
+    vaultsArray.forEach((vault) => {
+        if (vault.network === network) {
+            html += `
+                <option 
+                    value='${vault.name}: ${vault.address}'>${vault.name}: ${vault.address}
+                </option>
+            `
+        }
+    })
+    vaultAddressEl.innerHTML = html
+    if (vaultsArray.length > 1) {
+        deleteBtn.disabled = false
+    }
+    // Clear rewards grid
+    rewardsGrid.innerHTML = ``
 }
 
 function vaultSelectorChanged() {
@@ -190,7 +216,8 @@ function exportRewards() {
     XLSX.utils.book_append_sheet(wb, ws, "Rewards")
 
     const nameAddr = vaultAddressEl.value.split(': ')
-    const name = nameAddr[0].toLowerCase().replace(/ /g, "_")
+    const name = networkEl.value.toLowerCase() + "_" 
+        + nameAddr[0].toLowerCase().replace(/ /g, "_")
     XLSX.writeFile(wb, `${name}_rewards.xlsx`)
 }
 
@@ -201,18 +228,16 @@ function setupInputs() {
         vaultsArray = JSON.parse(array[1])
     } else {
         vaultsArray[0] = {
+            network: "Ethereum",
             name: "Genesis",
             address: genesisVaultAddress
         }
         writeCookie(vaultsArray)
     }
+    networkEl.value=vaultsArray[0].network
     vaultName.value = vaultsArray[0].name
     vaultAddress.value = vaultsArray[0].address
-    let html = ""
-    vaultsArray.forEach((vault) => {
-        html += `<option value='${vault.name}: ${vault.address}'>${vault.name}: ${vault.address}</option>`
-    })
-    vaultAddressEl.innerHTML = html
+    networkEl.dispatchEvent(new Event('change'))
 }
 
 setupInputs()

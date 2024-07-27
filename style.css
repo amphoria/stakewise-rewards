@@ -75,11 +75,11 @@ form {
     row-gap: 20px;
 }
 
-.vault-selector {
+.network-selector, .vault-selector {
     grid-column: 2 / -1;
 }
 
-.vault-address-el {
+.network-el, .vault-address-el {
     padding: 10px;
     background: #474649;
     color: whitesmoke;

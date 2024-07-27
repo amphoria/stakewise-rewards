@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 5101",
+    "dev": "vite --port 5205",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -13,8 +13,8 @@
     "vite-plugin-graphql-loader": "^2.0.0"
   },
   "dependencies": {
-    "@stakewise/v3-sdk": "^1.0.7",
-    "ethers": "^6.9.2",
+    "@stakewise/v3-sdk": "^2.0.0",
+    "ethers": "^6.13.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz"
   }
 }

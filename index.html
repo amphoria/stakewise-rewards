@@ -7,20 +7,25 @@
     <body>
         <h1>Stakewise Rewards</h1>
         <form>
-            <label class="form-label" for="vault-name">Vault name:</label>
+            <label class="form-label" for="form-network-name">Network:</label>
+            <select class="form-el" name="form-network-name" id="form-network-name">
+                <option value="Ethereum">Ethereum</option>
+                <option value="Gnosis">Gnosis</option>
+            </select>
+            <label class="form-label" for="form-vault-name">Vault name:</label>
             <input 
                 class="form-el" 
                 type="text" 
-                id="vault-name" 
-                name="vault-name" 
+                id="form-vault-name" 
+                name="form-vault-name" 
                 placeholder="Vault name"
             >
-            <label class="form-label" for="vault-address">Vault address:</label>
+            <label class="form-label" for="form-vault-address">Vault address:</label>
             <input
                 class="form-el" 
                 type="text" 
-                id="vault-address" 
-                name="vault-address" 
+                id="form-vault-address" 
+                name="form-vault-address" 
                 placeholder="Vault address"
             >
             <div class="form-buttons">
@@ -29,6 +34,16 @@
             </div>
         </form>
         <div class="grid-container">
+            <div class="grid-label">
+                <label for="network-el">Network:</label>
+            </div>
+            <div class="network-selector">
+                <select class="network-el" name="network-name" id="network-name">
+                    <option value="Ethereum">Ethereum</option>
+                    <option value="Gnosis">Gnosis</option>    
+                </select>
+            </div>
+             
             <div class="grid-label">
                 <label for="vault-address-el">Vault address:</label>
             </div>
