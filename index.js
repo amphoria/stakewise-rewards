@@ -162,11 +162,25 @@ function saveFromDate() {
     }
 }
 
+function unixTimestampToDate(timestamp) {
+    // Create a new Date object using the timestamp
+    const date = new Date(timestamp * 1000); // Multiply by 1000 to convert seconds to milliseconds
+
+    // Extract the year, month, and day
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // Months are zero-indexed, so add 1
+    const day = date.getDate();
+
+    // Format the date as YYYY-MM-DD
+    const formattedDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+    return formattedDate;
+}
+
 async function retrieveRewards() {
 
     let date
-    let localDate
-    const options = { year: 'numeric', month: 'short', day: 'numeric' }
+    let date2
 
     exportData = []
 
@@ -191,16 +205,16 @@ async function retrieveRewards() {
     const records = Object.entries(output)
 
     for (let record of records) {
-        date = new Date(record[0] * 1000)
-        localDate = new Intl.DateTimeFormat('en-GB', options).format(date)
+        date = unixTimestampToDate(record[0])
 
         rewardsGrid.innerHTML += 
             `
-            <div id="reward-date">${localDate}</div>
+            <div id="reward-date">${date}</div>
             <div id="reward-daily">${record[1].dailyRewards}</div> 
             <div id="reward-sum">${record[1].sumRewards}</div>
             `
-            
+
+
         // Create an array of objects in preparation for exporting to Excel
         let row = new Object();
         row.date = date
