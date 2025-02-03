@@ -111,9 +111,19 @@ function writeCookie(array) {
 function networkSelectorChanged() {
     const network = networkEl.value
     if (network === "Ethereum") {
-        sdk = new StakeWiseSDK({ network: Network.Mainnet })
+        sdk = new StakeWiseSDK({ 
+            network: Network.Mainnet,
+            endpoints: {
+                web3: 'https://eth-mainnet.g.alchemy.com/v2/JTXUw4DQJ0PEVskCBSsadhBnk3rkd4vN'
+            }
+        })
     } else if (network === "Gnosis") {
-        sdk = new StakeWiseSDK({ network: Network.Gnosis })
+        sdk = new StakeWiseSDK({ 
+            network: Network.Gnosis,
+            endpoints: {
+                web3: 'https://gnosis-mainnet.g.alchemy.com/v2/JTXUw4DQJ0PEVskCBSsadhBnk3rkd4vN'
+            }
+        })
     } else {
         console.log("Invalid network specified")
     }
@@ -180,16 +190,21 @@ function unixTimestampToDate(timestamp) {
 async function retrieveRewards() {
 
     let date
-    let date2
+    let jsTimestamp
 
     exportData = []
 
-    let jsTimestamp = new Date(fromDateEl.value).getTime()
-    const dateFrom = Number((jsTimestamp / 1000).toFixed(0))
+    jsTimestamp = new Date(fromDateEl.value).getTime()
+    const dateFrom = Number((jsTimestamp).toFixed(0))
+    jsTimestamp = Date.now()
+    const dateTo = Number((jsTimestamp).toFixed(0))
+    console.log(dateFrom)
+    console.log(dateTo)
 
     const nameAddr = vaultAddressEl.value.split(': ')
     const input = {
         dateFrom: dateFrom,
+        dateTo: dateTo,
         userAddress: userAddressEl.value,
         vaultAddress: nameAddr[1]
     }
@@ -199,19 +214,19 @@ async function retrieveRewards() {
     rewardsGrid.innerHTML = `
         <div id="reward-date">Date</div>
         <div id="reward-daily">Daily Rewards</div>
-        <div id="reward-sum">Cumulative Rewards</div>
+        <div id="reward-daily-gbp">Daily Rewards (GBP)</div>
         `
  
     const records = Object.entries(output)
 
     for (let record of records) {
-        date = unixTimestampToDate(record[0])
+        date = unixTimestampToDate(record[1].date / 1000)
 
         rewardsGrid.innerHTML += 
             `
             <div id="reward-date">${date}</div>
             <div id="reward-daily">${record[1].dailyRewards}</div> 
-            <div id="reward-sum">${record[1].sumRewards}</div>
+            <div id="reward-daily-gbp">${record[1].dailyRewardsGbp}</div>
             `
 
 
@@ -219,7 +234,7 @@ async function retrieveRewards() {
         let row = new Object();
         row.date = date
         row.daily_reward = record[1].dailyRewards
-        row.sum_rewards = record[1].sumRewards
+        row.daily_reward_gbp = record[1].dailyRewardsGbp
         exportData.push(row)
     }
 }

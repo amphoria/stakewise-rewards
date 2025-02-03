@@ -13,7 +13,7 @@
     "vite-plugin-graphql-loader": "^2.0.0"
   },
   "dependencies": {
-    "@stakewise/v3-sdk": "^2.0.0",
+    "@stakewise/v3-sdk": "^3.0.1",
     "ethers": "^6.13.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz"
   }
