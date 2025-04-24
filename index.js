@@ -75,14 +75,14 @@ exportRewardsBtn.addEventListener('click', exportRewards)
 const userAddressCookie = getCookie("defaultUserAddress")
 if (userAddressCookie != "") {
     // const defaultUserAddress = userAddressCookie.split('=')
-    userAddressEl.value = defaultUserAddress[1]
+    userAddressEl.value = userAddressCookie
 } 
 
 // Default from date
 const fromDateCookie = getCookie("defaultFromDate")
 if (fromDateCookie != "") {
     // const defaultFromDate = fromDateCookie.split('=')
-    fromDateEl.value = defaultFromDate[1]
+    fromDateEl.value = fromDateCookie
 } else {
     fromDateEl.value = '2023-11-29'
 }
@@ -265,7 +265,6 @@ function exportRewards() {
 
 function setupInputs() {
     const cookie = getCookie("stakewiseVaults")
-    console.log(`cookie=${cookie}`)
     if (cookie && cookie !== "[]") {
         // const array = cookie.split('=')
         vaultsArray = JSON.parse(cookie)
