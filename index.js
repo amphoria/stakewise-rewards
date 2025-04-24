@@ -74,34 +74,47 @@ exportRewardsBtn.addEventListener('click', exportRewards)
 // Default user address
 const userAddressCookie = getCookie("defaultUserAddress")
 if (userAddressCookie != "") {
-    const defaultUserAddress = userAddressCookie.split('=')
+    // const defaultUserAddress = userAddressCookie.split('=')
     userAddressEl.value = defaultUserAddress[1]
 } 
 
 // Default from date
 const fromDateCookie = getCookie("defaultFromDate")
 if (fromDateCookie != "") {
-    const defaultFromDate = fromDateCookie.split('=')
+    // const defaultFromDate = fromDateCookie.split('=')
     fromDateEl.value = defaultFromDate[1]
 } else {
     fromDateEl.value = '2023-11-29'
 }
 
-function getCookie(caddr) {
-    let address = caddr + "=";
-    let decodedCookie = decodeURIComponent(document.cookie);
-    let ca = decodedCookie.split(';');
-    for(let i = 0; i <ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(address) == 0) {
-            return c.substring(name.length, c.length);
+function getCookie(cookieName) {
+    const name = cookieName + "="
+    const decodedCookie = decodeURIComponent(document.cookie)
+    const cookieArray = decodedCookie.split(';')
+
+    for (let i = 0; i < cookieArray.length; i++) {
+        let cookie = cookieArray[i].trim()
+        if (cookie.startsWith(name)) {
+            return cookie.substring(name.length)
         }
     }
-    return "";
+    return ""    
 }
+// function getCookie(caddr) {
+//     let address = caddr + "=";
+//     let decodedCookie = decodeURIComponent(document.cookie);
+//     let ca = decodedCookie.split(';');
+//     for(let i = 0; i <ca.length; i++) {
+//         let c = ca[i];
+//         while (c.charAt(0) == ' ') {
+//             c = c.substring(1);
+//         }
+//         if (c.indexOf(address) == 0) {
+//             return c.substring(name.length, c.length);
+//         }
+//     }
+//     return "";
+// }
 
 function writeCookie(array) {
     const arrayStr = JSON.stringify(array)
@@ -252,15 +265,16 @@ function exportRewards() {
 
 function setupInputs() {
     const cookie = getCookie("stakewiseVaults")
-    if (cookie != "") {
-        const array = cookie.split('=')
-        vaultsArray = JSON.parse(array[1])
+    console.log(`cookie=${cookie}`)
+    if (cookie && cookie !== "[]") {
+        // const array = cookie.split('=')
+        vaultsArray = JSON.parse(cookie)
     } else {
-        vaultsArray[0] = {
+        vaultsArray.push({
             network: "Ethereum",
             name: "Genesis",
             address: genesisVaultAddress
-        }
+        })
         writeCookie(vaultsArray)
     }
     networkEl.value=vaultsArray[0].network
